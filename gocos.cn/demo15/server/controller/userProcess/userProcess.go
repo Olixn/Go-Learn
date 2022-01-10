@@ -13,6 +13,8 @@ import (
 	"fmt"
 	"gocos.cn/demo15/common/message"
 	"gocos.cn/demo15/common/utils"
+	"gocos.cn/demo15/server/model/errorModel"
+	"gocos.cn/demo15/server/model/userModel"
 	"net"
 )
 
@@ -39,14 +41,33 @@ func (u *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 	// 在声明一个 LoginResMes
 	var loginResMes message.LoginResMes
 
-	// 如果用户id 100 密码 123456 否则不合法
-	if loginMes.UserId == 100 && loginMes.UserPwd == "123456" {
-		// 合法
-		loginResMes.Code = 200
+	//// 如果用户id 100 密码 123456 否则不合法
+	//if loginMes.UserId == 100 && loginMes.UserPwd == "123456" {
+	//	// 合法
+	//	loginResMes.Code = 200
+	//} else {
+	//	// 不合法
+	//	loginResMes.Code = 500 // 用户不存在
+	//	loginResMes.Error = "该用户不存在，请先注册"
+	//}
+
+	// 操作redis数据库
+	user, err := userModel.MyUserDao.Login(loginMes.UserId, loginMes.UserPwd)
+
+	if err != nil {
+		if err == errorModel.ERROR_USER_NOTEXISTS {
+			loginResMes.Code = 500 // 用户不存在
+			loginResMes.Error = err.Error()
+		} else if err == errorModel.ERROR_USER_PWD {
+			loginResMes.Code = 300
+			loginResMes.Error = err.Error()
+		} else {
+			loginResMes.Code = 505
+			loginResMes.Error = "服务器内部错误"
+		}
 	} else {
-		// 不合法
-		loginResMes.Code = 500 // 用户不存在
-		loginResMes.Error = "该用户不存在，请先注册"
+		loginResMes.Code = 200
+		fmt.Println(user, "登陆成功")
 	}
 
 	// 序列化 loginResMes
