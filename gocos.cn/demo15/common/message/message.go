@@ -9,9 +9,20 @@
 package message
 
 const (
-	LoginMesType    = "LoginMes"
-	LoginResMesType = "LoginResMes"
-	RegisterMesType = "RegisterMes"
+	LoginMesType            = "LoginMes"
+	LoginResMesType         = "LoginResMes"
+	RegisterMesType         = "RegisterMes"
+	RegisterResMesType      = "RegisterResMes"
+	NotifyUserStatusMesType = "NotifyUserStatusMes"
+	SmsMesType              = "SmsMes"
+	SmsResMesType           = "SmsResMes"
+)
+
+// 定义几个用户状态的常量
+const (
+	UserOnline = iota
+	UserOffline
+	UserBusyStatus
 )
 
 type Message struct {
@@ -28,9 +39,35 @@ type LoginMes struct {
 }
 
 type LoginResMes struct {
-	Code  int    `json:"code"`  // 返回状态码 500 未注册 200 登录成功
-	Error string `json:"error"` // 返回的错误信息
+	Code    int    `json:"code"`    // 返回状态码 500 未注册 200 登录成功
+	Error   string `json:"error"`   // 返回的错误信息
+	UsersId []int  `json:"usersId"` // 增加字段，保持在线用户id
 }
 
 type RegisterMes struct {
+	User User `json:"user"`
+}
+
+type RegisterResMes struct {
+	Code  int    `json:"code"`  // 返回状态码 400 已占用 200 注册成功
+	Error string `json:"error"` // 返回的错误信息
+}
+
+// 配合服务器端的推送
+
+type NotifyUserStatusMes struct {
+	UserId     int `json:"userId"`
+	UserStatus int `json:"userStatus"`
+}
+
+// 增加一个SmsMes
+
+type SmsMes struct {
+	User           // 匿名结构体
+	Content string `json:"content,omitempty"` // 内容
+}
+
+type SmsResMes struct {
+	User           // 匿名结构体
+	Content string `json:"content,omitempty"` // 内容
 }

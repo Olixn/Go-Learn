@@ -8,9 +8,11 @@
 
 package initService
 
-import "gocos.cn/demo15/server/model/userModel"
+import (
+	"gocos.cn/demo15/server/model"
+)
 
 func InitUserDao() {
 	// pool 是全局变量，并且通过InitRedisPool初始化，所以本函数调用要在其 之后
-	userModel.MyUserDao = userModel.NewUserDao(pool)
+	model.MyUserDao = model.NewUserDao(pool)
 }

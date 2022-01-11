@@ -22,6 +22,8 @@ func init() {
 	fmt.Println("redis连接池初始化完成")
 	// 初始化一个全局的UserDao实例
 	initService.InitUserDao()
+	// 初始化一个全局在线人数管理
+	initService.InitUserMgr()
 }
 
 // 处理和客户端的通讯

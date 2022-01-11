@@ -12,7 +12,6 @@ import (
 	"fmt"
 	"gocos.cn/demo15/common/message"
 	"gocos.cn/demo15/common/utils"
-	"gocos.cn/demo15/server/controller/userProcess"
 	"io"
 	"net"
 )
@@ -24,15 +23,24 @@ type Processor struct {
 // 编写一个ServerProcessMes 函数 来处理不同消息
 
 func (p *Processor) ServerProcessMes(mes *message.Message) (err error) {
+
 	switch mes.Type {
 	case message.LoginMesType:
 		// 处理登录
-		up := &userProcess.UserProcess{
+		up := &UserProcess{
 			Conn: p.Conn,
 		}
 		err = up.ServerProcessLogin(mes)
 	case message.RegisterMesType:
 		// 处理注册
+		up := &UserProcess{
+			Conn: p.Conn,
+		}
+		err = up.ServerProcessRegister(mes)
+	case message.SmsMesType:
+		// 处理短消息,创建一个smsProcess实例来转发消息
+		sp := &SmsProcess{}
+		sp.SendGroupMes(mes)
 	default:
 		fmt.Println("消息类型不存在，无法处理......")
 	}
@@ -56,7 +64,6 @@ func (p *Processor) Process() (err error) {
 				fmt.Println("readPkg err = ", err)
 				return err
 			}
-
 		}
 		fmt.Println("mes = ", mes)
 		err = p.ServerProcessMes(&mes)

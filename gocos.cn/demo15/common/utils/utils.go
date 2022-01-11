@@ -26,7 +26,7 @@ func (t *Transfer) ReadPkg() (mes message.Message, err error) {
 	// 发送数据data 先发长度，再发data
 	// data长度->表示长度的切片
 	// buf := make([]byte, 8096)
-	fmt.Println("读取数据。。。")
+	// fmt.Println("读取数据。。。")
 	// conn.Read 只有在conn没有被关闭的情况下，才会阻塞，如果客户端关闭conn则不会阻塞了
 	_, err = t.Conn.Read(t.Buf[:4])
 	if err != nil {

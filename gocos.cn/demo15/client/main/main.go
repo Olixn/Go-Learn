@@ -10,11 +10,12 @@ package main
 
 import (
 	"fmt"
-	"gocos.cn/demo15/client/controller/userProcess"
+	"gocos.cn/demo15/client/controller"
 )
 
 var userId int
 var userPwd string
+var userName string
 
 func main() {
 	// 接受用户选择
@@ -38,12 +39,21 @@ func main() {
 			fmt.Println("请输入用户密码：")
 			fmt.Scanf("%s\n", &userPwd)
 			// 登录
-			up := &userProcess.UserProcess{}
+			up := &controller.UserProcess{}
 			up.Login(userId, userPwd)
 			// loop = false
 		case 2:
 			fmt.Println("注册用户")
-			loop = false
+			fmt.Println("请输入用户id：")
+			fmt.Scanf("%d\n", &userId)
+			fmt.Println("请输入用户密码：")
+			fmt.Scanf("%s\n", &userPwd)
+			fmt.Println("请输入用户名字：")
+			fmt.Scanf("%s\n", &userName)
+			// 注册
+			up := &controller.UserProcess{}
+			up.Register(userId, userPwd, userName)
+			// loop = false
 		case 3:
 			fmt.Println("退出系统")
 			loop = false
